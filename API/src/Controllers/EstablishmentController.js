@@ -1,4 +1,4 @@
-const connection = require('../Database/conection')
+const connection = require('../Database/connection')
 
 module.exports = {
   async create(req, res) {
@@ -10,14 +10,14 @@ module.exports = {
         cnpj,
         adress,
         password
-      }).returning('id')
-      return res.status(201).json(id)
+      })
+      return res.status(201).json({ id: id[0] })
     } catch (e) {
       return res.status(400).send('couldnt create user')
     }
   },
 
-  async login(res, req) {
+  async login(req, res) {
     const { cnpj, password } = req.body
 
     const id = await connection('establishments').select('id').where({

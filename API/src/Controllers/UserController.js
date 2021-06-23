@@ -1,4 +1,6 @@
-const connection = require('../Database/conection')
+const connection = require('../Database/connection')
+const knexfile = require('../../knexfile')
+const knex = require('knex')(knexfile.development)
 
 module.exports = {
   async create(req, res) {
@@ -10,9 +12,9 @@ module.exports = {
         email,
         password,
         adress
-      }).returning('id')
+      })
 
-      return res.status(201).json(id)
+      return res.status(201).json({ id: id[0] })
     } catch (e) {
       return res.status(400).send('couldnt create user')
     }
@@ -34,12 +36,12 @@ module.exports = {
   },
 
   async getEstablishmentsStatus(req, res) {
-    const { user_id } = req.body
+    const { id } = req.params
 
     const establishments = await connection('log')
       .join('establishments', 'log.establishment_id', '=', 'establishments.id')
-      .where('log.user_id', user_id)
-      .select('establishments.*', 'log.check_in_time', 'log.check_out_time')
+      .where('log.user_id', id)
+      .select('establishments.name', 'establishments.adress', 'log.check_in_time', 'log.check_out_time')
 
     return res.json(establishments)
   },
@@ -55,7 +57,7 @@ module.exports = {
     const { lab_id, user_id } = req.body
 
     try {
-      await connection('labs_users').insert({
+      await connection('lab_user').insert({
         user_id,
         lab_id
       })
@@ -70,7 +72,7 @@ module.exports = {
     const { lab_id, user_id } = req.body
 
     try {
-      await connection('labs_users').delete({
+      await connection('lab_user').delete({
         user_id,
         lab_id
       })
@@ -79,5 +81,30 @@ module.exports = {
     }
 
     return res.status(202).send()
+  },
+
+  async checkIn(req, res) {
+    const { user_id, establishment_id } = req.body
+
+    try {
+      const id = await connection('log').insert({
+        user_id,
+        establishment_id
+      })
+      return res.json({ checkIn_id: id[0] })
+    } catch (e) {
+      return res.status(400).send('couldnt check in')
+    }
+  },
+
+  async checkOut(req, res) {
+    const { id } = req.body
+
+
+    await connection('log').where('id', id).update({
+      check_out_time: knex.raw('CURRENT_TIMESTAMP')
+    })
+
+    return res.status(200).send()
   }
 }

@@ -1,4 +1,4 @@
-const connection = require('../Database/conection')
+const connection = require('../Database/connection')
 
 module.exports = {
   async create(req, res) {
@@ -9,17 +9,25 @@ module.exports = {
         cnpj,
         password,
         adress
-      }).returning('id')
-      return res.status(201).json(id)
+      })
+      return res.status(201).json({ id: id[0] })
     } catch (e) {
       return res.status(400).send('couldnt create lab')
     }
   },
 
+  async getInfo(req, res) {
+    const { id } = req.params
+
+    const info = await connection('labs').select('*').where('id', id)
+
+    return res.json(info)
+  },
+
   async login(req, res) {
     const { cnpj, password } = req.body
 
-    const id = await connection('lab').select('id').where({
+    const id = await connection('labs').select('id').where({
       cnpj,
       password
     }).first()
@@ -34,7 +42,7 @@ module.exports = {
   async tagPatient(req, res) {
     const { user_id, lab_id } = req.body
 
-    const auth = await connection('labs_users').select('id').where({
+    const auth = await connection('lab_user').select('id').where({
       lab_id,
       user_id
     }).first()
@@ -66,7 +74,7 @@ module.exports = {
   async untagPatient(req, res) {
     const { user_id, lab_id } = req.body
 
-    const auth = await connection('labs_users').select('id').where({
+    const auth = await connection('lab_user').select('id').where({
       lab_id,
       user_id
     }).first()
