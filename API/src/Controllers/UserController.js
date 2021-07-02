@@ -83,7 +83,6 @@ module.exports = {
 
   async checkIn(req, res) {
     const { user_id, establishment_id } = req.body
-    console.log('request!')
     try {
       const id = await connection('log').insert({
         user_id,
