@@ -27,7 +27,7 @@ export default function Register({ navigation }) {
     if (response.status == 201) {
       await returning(response.data.id)
     } else {
-      //TODO erro
+      alert('Não foi possivel Cadastrar Usuário')
     }
   }
 

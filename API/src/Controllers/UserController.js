@@ -83,7 +83,7 @@ module.exports = {
 
   async checkIn(req, res) {
     const { user_id, establishment_id } = req.body
-
+    console.log('request!')
     try {
       const id = await connection('log').insert({
         user_id,
@@ -91,6 +91,7 @@ module.exports = {
       })
       return res.json({ checkIn_id: id[0] })
     } catch (e) {
+      console.log(e)
       return res.status(400).send('couldnt check in')
     }
   },

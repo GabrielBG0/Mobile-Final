@@ -12,11 +12,15 @@ export function AunthProvider({ children }) {
     login: async (email, password) => {
 
       const response = await Api.post('/user/login', { email, password })
-      const id = response.data.id
-      setUser(id)
-      setLoggedIn(true)
-      AsyncStorage.setItem('user', String(user))
-      AsyncStorage.setItem('logged', String(loggedIn))
+      if (response.status === 200) {
+        const id = response.data.id
+        setUser(id)
+        setLoggedIn(true)
+        AsyncStorage.setItem('user', String(user))
+        AsyncStorage.setItem('logged', String(loggedIn))
+      } else {
+        alert('Não foi possivel evetuar login')
+      }
 
     },
     logout: () => {

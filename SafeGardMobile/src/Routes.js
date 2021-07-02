@@ -4,8 +4,8 @@ import BaseScreen from './Components/BaseScreen';
 import { ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AuthContext } from './AuthProvider';
-import HomeStack from './HomeStack';
 import LoginStack from './LoginStack';
+import AppStack from './AppStack';
 
 
 
@@ -41,7 +41,7 @@ export default function Routes(props) {
 
   return (
     <NavigationContainer>
-      {user ? <HomeStack /> : <LoginStack ss={startScreen} />}
+      {user ? <AppStack /> : <LoginStack ss={startScreen} />}
     </NavigationContainer>
   )
 }

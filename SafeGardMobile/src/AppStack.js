@@ -7,8 +7,8 @@ const Stack = createStackNavigator()
 
 export default function AppStack(props) {
   return (
-    <Stack.Navigator initialRouteName='Home' screenOptions={{ header: () => null }}>
-      <Stack.Screen name='Home' component={HomeStack} />
+    <Stack.Navigator initialRouteName='Info' screenOptions={{ header: () => null }}>
+      <Stack.Screen name='Info' component={HomeStack} />
       <Stack.Screen name='QRCode' component={QRCode} />
     </Stack.Navigator>)
 }
