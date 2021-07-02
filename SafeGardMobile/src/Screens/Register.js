@@ -5,12 +5,31 @@ import Input from '../Components/Input'
 import Colors from '../Constants/Colors'
 import BaseScreen from '../Components/BaseScreen'
 import Title from '../Components/Title'
+import Api from '../Services/Api'
 import { AuthContext } from '../AuthProvider'
 
-export default function LogIn({ navigation }) {
+export default function Register({ navigation }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { login } = useContext(AuthContext)
+  const [name, setName] = useState('')
+  const [adress, setAdress] = useState('')
+  const { returning } = useContext(AuthContext)
+
+
+  async function handleRegistre() {
+    const response = await Api.post('/user', {
+      name,
+      email,
+      password,
+      adress
+    })
+
+    if (response.status == 201) {
+      await returning(response.data.id)
+    } else {
+      //TODO erro
+    }
+  }
 
   return (
     <TouchableWithoutFeedback onPress={() => {
@@ -23,19 +42,27 @@ export default function LogIn({ navigation }) {
             style={{ width: 40, height: 40 }} />
         </View>
         <View style={styles.content}>
-          <Title >Entrar</Title>
+          <Title >Cadastro</Title>
           <View style={styles.formInputs}>
+            <View style={styles.inputGroup}>
+              <Text>Nome</Text>
+              <Input onChangeText={Inome => setName(Inome)} autoCapitalize='words' autoCompleteType='email' />
+            </View>
             <View style={styles.inputGroup}>
               <Text>Email</Text>
               <Input onChangeText={Iemail => setEmail(Iemail)} autoCapitalize='none' autoCompleteType='email' />
             </View>
             <View style={styles.inputGroup}>
               <Text>Senha</Text>
-              <Input onChangeText={Ipassword => setPassword(Ipassword)} secureTextEntry={true} />
+              <Input onChangeText={Ipassword => setPassword(Ipassword)} autoCapitalize='none' secureTextEntry={true} />
             </View >
+            <View style={styles.inputGroup}>
+              <Text>Endereço</Text>
+              <Input onChangeText={Iendereco => setAdress(Iendereco)} autoCapitalize='words' autoCompleteType='email' />
+            </View>
             <View style={styles.formButtons}>
               <View style={styles.butttonSize}><Button title='Voltar' onPress={() => { navigation.goBack() }} color={Colors.danger} /></View>
-              <View style={styles.butttonSize}><Button title='Confirmar' onPress={async () => { login(email, password) }} color={Colors.icons} /></View>
+              <View style={styles.butttonSize}><Button title='Confirmar' onPress={handleRegistre} color={Colors.icons} /></View>
             </View>
           </View>
         </View>

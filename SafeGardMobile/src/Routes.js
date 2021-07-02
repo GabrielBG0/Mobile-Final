@@ -11,13 +11,19 @@ import LoginStack from './LoginStack';
 
 
 export default function Routes(props) {
-  const { user, login } = useContext(AuthContext)
+  const { user, returning } = useContext(AuthContext)
+  const [startScreen, setStartScreen] = useState('Welcome')
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     AsyncStorage.getItem('user').then(userString => {
-      if (userString) {
-        login('teste', 'teste')
+      if (userString && userString !== 'null') {
+        returning(parseInt(userString))
+        AsyncStorage.getItem('logged').then(logged => {
+          if (logged === 'true') {
+            setStartScreen('LogIn')
+          }
+        })
       }
       setLoading(false)
     }).catch(err => {
@@ -35,7 +41,7 @@ export default function Routes(props) {
 
   return (
     <NavigationContainer>
-      {user ? <HomeStack /> : <LoginStack />}
+      {user ? <HomeStack /> : <LoginStack ss={startScreen} />}
     </NavigationContainer>
   )
 }

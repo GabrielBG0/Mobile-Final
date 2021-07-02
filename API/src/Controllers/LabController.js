@@ -2,11 +2,12 @@ const connection = require('../Database/connection')
 
 module.exports = {
   async create(req, res) {
-    const { cnpj, password, adress } = req.body
+    const { cnpj, name, password, adress } = req.body
 
     try {
       const id = await connection('labs').insert({
         cnpj,
+        name,
         password,
         adress
       })
@@ -60,10 +61,25 @@ module.exports = {
     }
 
     try {
-      await connection('tag_log').insert({
+      await connection('user_tag_log').insert({
         tagged: true,
         user_id,
         lab_id
+      })
+      const userLogs = await connection('log')
+        .join('establishments', 'log.establishment_id', '=', 'establishments.id')
+        .where('log.user_id', user_id)
+        .select('establishments.id')
+
+      userLogs.map(async log => {
+        await connection('establishments').where('id', log.id).update({
+          risk: true
+        })
+        await connection('est_tag_log').insert({
+          tagged: true,
+          establishment_id: log.id,
+          lab_id: lab_id
+        })
       })
     } catch (e) {
       return res.status(404).send('Patient was tagged but system failed to create log')
@@ -92,7 +108,7 @@ module.exports = {
     }
 
     try {
-      await connection('tag_log').insert({
+      await connection('user_tag_log').insert({
         tagged: false,
         user_id,
         lab_id

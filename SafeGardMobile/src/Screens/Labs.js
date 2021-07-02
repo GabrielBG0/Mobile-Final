@@ -1,36 +1,36 @@
 import React, { useContext, useState, useEffect } from 'react'
-import { View, StyleSheet, FlatList, Dimensions } from 'react-native'
+import { View, StyleSheet, FlatList } from 'react-native'
 import Api from '../Services/Api';
-import LocationCards from '../Components/LocationCard';
+import LabCards from '../Components/LabCards';
 import BaseScreen from '../Components/BaseScreen';
 import StatusBarTheme from '../Components/StatusBarTheme';
 import Header from '../Components/Header'
 import { AuthContext } from '../AuthProvider';
-import Title from '../Components/Title';
+import Title from '../Components/Title'
 
 
 export default function Home(props) {
-  const [change, setChange] = useState(false)
+  const [hasChanges, setHasChanges] = useState(false)
   const [isRefreshing, setIsRefreshing] = useState(false)
-  const [locations, setLocaions] = useState([])
+  const [labs, setLabs] = useState([])
   const { user } = useContext(AuthContext)
 
   useEffect(() => {
     (async () => {
       setIsRefreshing(true)
-      const locationsList = await Api.get('/user/establishments/' + user)
-      setLocaions(locationsList.data)
-      setChange(false)
+      const labList = await Api.get('/user/labs/' + user)
+      setLabs(labList.data)
+      setHasChanges(false)
+      setIsRefreshing(false)
     })()
-    setIsRefreshing(false)
-  }, [change])
+  }, [hasChanges])
   return (
     <BaseScreen >
       <StatusBarTheme />
       <Header />
       <View style={styles.content}>
-        <Title>Home</Title>
-        <FlatList refreshing={isRefreshing} onRefresh={() => { setChange(true) }} data={locations} renderItem={LocationCards} keyExtractor={item => String(item.id)} />
+        <Title>Laboratórios</Title>
+        <FlatList refreshing={isRefreshing} onRefresh={() => { setHasChanges(true) }} data={labs} renderItem={({ item }) => <LabCards item={item} userId={user} hasChanges={setHasChanges} />} keyExtractor={item => String(item.id)} />
       </View>
     </BaseScreen>
   )
@@ -40,8 +40,8 @@ export default function Home(props) {
 
 const styles = StyleSheet.create({
   content: {
-    height: '100%',
     flex: 1,
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'flex-start',
   }

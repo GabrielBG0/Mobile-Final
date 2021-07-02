@@ -3,11 +3,11 @@ import { StyleSheet, Text, Dimensions, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Colors from '../Constants/Colors';
 
-export default function LocationCards(props) {
+export default function LocationCards({ item }) {
   return (
     <View style={styles.card}>
-      <Text>{props.locationName}</Text>
-      <Ionicons name={props.risk ? 'alert-sharp' : 'checkmark-sharp'} size={30} color={props.risk ? Colors.danger : Colors.safe} />
+      <Text>{item.name}</Text>
+      <Ionicons name={item.risk == 0 ? 'checkmark-sharp' : 'alert-sharp'} size={30} color={item.risk == 1 ? Colors.danger : Colors.safe} />
     </View>
   )
 }
@@ -16,7 +16,8 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     flexDirection: 'row',
-    margin: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
     padding: 20,
     height: '100%',
     maxHeight: 75,

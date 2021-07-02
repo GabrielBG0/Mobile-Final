@@ -37,5 +37,5 @@ module.exports = {
     const info = await connection('establishments').select('*').where('id', id)
 
     return res.json(info)
-  }
+  },
 }

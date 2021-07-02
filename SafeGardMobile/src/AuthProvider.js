@@ -6,21 +6,28 @@ export const AuthContext = React.createContext({})
 
 export function AunthProvider({ children }) {
   const [user, setUser] = useState(null)
+  const [loggedIn, setLoggedIn] = useState(false)
   return <AuthContext.Provider value={{
     user,
     login: async (email, password) => {
-      try {
-        const response = await Api.post('/user/login', { email, password })
-        const id = response.data.id
-        setUser(id)
-        AsyncStorage.setItem('user', String(user))
-      } catch (e) {
 
-      }
+      const response = await Api.post('/user/login', { email, password })
+      const id = response.data.id
+      setUser(id)
+      setLoggedIn(true)
+      AsyncStorage.setItem('user', String(user))
+      AsyncStorage.setItem('logged', String(loggedIn))
+
     },
     logout: () => {
       setUser(null)
+      setLoggedIn(true)
       AsyncStorage.removeItem('user')
+      AsyncStorage.removeItem('logged')
+    },
+    returning: async (logedUser) => {
+      setUser(logedUser)
+      AsyncStorage.setItem('user', String(user))
     }
   }}>{children}</AuthContext.Provider>
 }

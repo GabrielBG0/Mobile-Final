@@ -1,10 +1,11 @@
 import React from 'react'
 import { StyleSheet } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { FontAwesome, FontAwesome5, Feather, Ionicons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import Home from './Screens/Home';
 import Profile from './Screens/Profile';
+import Labs from './Screens/Labs'
 import Colors from './Constants/Colors';
 
 const Tabs = createBottomTabNavigator()
@@ -37,7 +38,7 @@ export default function HomeStack(props) {
       initialRouteName='Home' >
       <Tabs.Screen name='Profile' component={Profile} />
       <Tabs.Screen name='Home' component={Home} />
-      <Tabs.Screen name='Labs' component={Home} />
+      <Tabs.Screen name='Labs' component={Labs} />
     </Tabs.Navigator >
   )
 }

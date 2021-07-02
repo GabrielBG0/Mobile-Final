@@ -13,7 +13,6 @@ module.exports = {
         password,
         adress
       })
-      console.log('foi')
       return res.status(201).json({ id: id[0] })
     } catch (e) {
       return res.status(400).send('couldnt create user')
@@ -31,7 +30,6 @@ module.exports = {
     if (id == null) {
       return res.status(404).send('user not found')
     }
-    console.log('foi')
     return res.json(id)
   },
 
@@ -41,7 +39,7 @@ module.exports = {
     const establishments = await connection('log')
       .join('establishments', 'log.establishment_id', '=', 'establishments.id')
       .where('log.user_id', id)
-      .select('log.id', 'establishments.name', 'establishments.adress', 'log.check_in_time', 'log.check_out_time')
+      .select('log.id', 'establishments.name', 'establishments.adress', 'log.check_in_time', 'log.check_out_time', 'establishments.risk')
 
     return res.json(establishments)
   },
@@ -106,5 +104,13 @@ module.exports = {
     })
 
     return res.status(200).send()
+  },
+  async getLabs(req, res) {
+    const { id } = req.params
+
+    const labs = await connection('lab_user').join('labs', 'labs.id', '=', 'lab_user.lab_id')
+      .where('lab_user.user_id', id).select('labs.name', 'labs.id')
+
+    return res.json(labs)
   }
 }
